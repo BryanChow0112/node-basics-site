@@ -1,0 +1,16 @@
+{
+  "name": "basics-site",
+  "version": "1.0.0",
+  "description": "This project is a simple Node.js application that serves basic HTML pages. I built this to strengthen my understanding of Node.js fundamentals, such as setting up a server, handling routes and serving static files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "node --watch app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

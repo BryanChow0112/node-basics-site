@@ -25,6 +25,9 @@ app.set("views", path.join(__dirname, "views"));
 // Middleware and static files
 app.use(express.static(path.join(__dirname, "public")));
 
+// Parse URL-encoded bodies (as sent by HTML forms) and make it available under req.body
+app.use(express.urlencoded({ extended: true }));
+
 // HTTP request logger
 app.use(morgan("dev"));
 
@@ -87,6 +90,43 @@ app.get("/blogs", (req, res) => {
       res.render("index", { blogs: result, title: "All blogs" });
     })
     .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.post("/blogs", (req, res) => {
+  // req.body is the data sent from the form in create.ejs
+  // only available because of the urlencoded middleware
+  const blog = new Blog(req.body);
+
+  blog
+    .save()
+    .then((result) => {
+      res.redirect("/blogs");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.get('/blogs/:id', (req, res) => {
+  const id = req.params.id;  // Extract the id from the URL
+  Blog.findById(id)
+    .then(result => {
+      res.render('details', { blog: result, title: 'Blog Details' });
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
+app.delete('/blogs/:id', (req, res) => {
+  const id = req.params.id;
+  Blog.findByIdAndDelete(id)
+    .then(result => {
+      res.json({ redirect: '/blogs' });
+    })
+    .catch(err => {
       console.log(err);
     });
 });

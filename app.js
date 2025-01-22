@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("node:path");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const Blog = require("./models/Blog");
+const blogRoutes = require("./routes/blog-routes");
 const PORT = 3000;
 
 // Create an Express app
@@ -31,44 +31,6 @@ app.use(express.urlencoded({ extended: true }));
 // HTTP request logger
 app.use(morgan("dev"));
 
-// Test routes for MongoDB
-app.get("/add-blog", (req, res) => {
-  const blog = new Blog({
-    title: "new blog",
-    snippet: "about my new blog",
-    body: "more about my new blog"
-  });
-
-  blog
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get("/all-blogs", (req, res) => {
-  Blog.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get("/single-blog", (req, res) => {
-  Blog.findById("67909bcaa0e557f9351fdc33")
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
 // Page routes
 app.get("/", (req, res) => {
   res.redirect("/blogs");
@@ -79,57 +41,7 @@ app.get("/about", (req, res) => {
 });
 
 // Blog routes
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create a new blog" });
-});
-
-app.get("/blogs", (req, res) => {
-  Blog.find()
-    .sort({ createdAt: -1 })
-    .then((result) => {
-      res.render("index", { blogs: result, title: "All blogs" });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.post("/blogs", (req, res) => {
-  // req.body is the data sent from the form in create.ejs
-  // only available because of the urlencoded middleware
-  const blog = new Blog(req.body);
-
-  blog
-    .save()
-    .then((result) => {
-      res.redirect("/blogs");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
-
-app.get('/blogs/:id', (req, res) => {
-  const id = req.params.id;  // Extract the id from the URL
-  Blog.findById(id)
-    .then(result => {
-      res.render('details', { blog: result, title: 'Blog Details' });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-});
-
-app.delete('/blogs/:id', (req, res) => {
-  const id = req.params.id;
-  Blog.findByIdAndDelete(id)
-    .then(result => {
-      res.json({ redirect: '/blogs' });
-    })
-    .catch(err => {
-      console.log(err);
-    });
-});
+app.use("/blogs", blogRoutes);
 
 // 404 handler - must be last
 app.use((req, res) => {

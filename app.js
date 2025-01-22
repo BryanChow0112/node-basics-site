@@ -10,7 +10,21 @@ app.set("views", path.join(__dirname, "views"));
 
 // Page routes
 app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
+  const blogs = [
+    {
+      title: "Yoshi finds eggs",
+      snippet: "Lorem ipsum dolor sit amet consectetur"
+    },
+    {
+      title: "Mario finds stars",
+      snippet: "Lorem ipsum dolor sit amet consectetur"
+    },
+    {
+      title: "How to defeat bowser",
+      snippet: "Lorem ipsum dolor sit amet consectetur"
+    }
+  ];
+  res.render("index", { title: "Home", blogs });
 });
 
 app.get("/about", (req, res) => {

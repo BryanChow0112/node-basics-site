@@ -1,12 +1,19 @@
 const express = require("express");
+const path = require("node:path");
+const morgan = require("morgan");
 const app = express();
 const PORT = 3000;
-const path = require("node:path");
 
 // Set the view engine to EJS
 app.set("view engine", "ejs");
 // Look for views in the views directory
 app.set("views", path.join(__dirname, "views"));
+
+// Middleware and static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// HTTP request logger
+app.use(morgan("dev"));
 
 // Page routes
 app.get("/", (req, res) => {
